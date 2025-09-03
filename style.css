@@ -1,0 +1,668 @@
+/*--------------------------------------------------------------
+>>> TABLE OF CONTENTS:
+----------------------------------------------------------------
+# Imports
+# Design Tokens (CSS Variables)
+# Theme: Light / Dark / Auto
+# Base / Resets
+# Layout
+# Card Aesthetic / Visual Polish
+# SVG / Timer Visual (scoped)
+# Live Readout
+# Timer Controls ("- 25 +")
+# Buttons
+# Details (Presets, Customize)
+# Inputs
+# Utility / A11y
+# Media Queries / Reduced Motion
+--------------------------------------------------------------*/
+
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:800,300");
+
+/*--------------------------------------------------------------
+ # Design Tokens (CSS Variables)
+--------------------------------------------------------------*/
+:root {
+  --bg: #0d0f13;
+  --bg-elev: #161a22;
+  --bg-elev-2: #1d2230;
+  --text: #e6e7eb;
+  --text-muted: #9aa3b2;
+  --primary: #00fffc;
+  --accent: #6c8cff;
+  --danger: #ff5c71;
+  --ring: rgba(0,255,252,0.5);
+  --border: rgba(255,255,255,0.08);
+  --border-strong: rgba(255,255,255,0.18);
+  --shadow: 0 10px 30px rgba(0,0,0,.35);
+  --radius: 14px;
+
+  --btn-bg: #1e2430;
+  --btn-text: #e6e7eb;
+  --btn-border: rgba(255,255,255,0.12);
+
+  --card-pad: clamp(16px, 2.5vw, 28px);
+  --gutter: clamp(14px, 2vw, 22px);
+
+  --font: "Open Sans", system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+
+  --glass-bg: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(0,0,0,0.08));
+  --glass-blur: 10px;
+
+  --grad-1: linear-gradient(135deg, var(--accent), var(--primary));
+  --grad-2: linear-gradient(135deg, #ff7a7a, #ffd36e);
+}
+
+/*--------------------------------------------------------------
+ # Theme: Light / Dark / Auto
+ - Use data-theme on <body>: "light" | "dark" | "auto"
+--------------------------------------------------------------*/
+body[data-theme="light"] {
+  --bg: #f6f7f9;
+  --bg-elev: #ffffff;
+  --bg-elev-2: #f1f3f8;
+  --text: #1d2430;
+  --text-muted: #5f6b7a;
+  --primary: #00b9b7;
+  --accent: #4b6bff;
+  --ring: rgba(75,107,255,0.35);
+  --border: rgba(0,0,0,0.08);
+  --border-strong: rgba(0,0,0,0.14);
+  --shadow: 0 10px 24px rgba(16,24,40,.08);
+  --btn-bg: #ffffff;
+  --btn-text: #1d2430;
+  --btn-border: rgba(0,0,0,0.12);
+  --glass-bg: linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.06));
+  --glass-blur: 6px;
+}
+
+/* Auto follows system preference */
+@media (prefers-color-scheme: light) {
+  body[data-theme="auto"] {
+    --bg: #f6f7f9;
+    --bg-elev: #ffffff;
+    --bg-elev-2: #f1f3f8;
+    --text: #1d2430;
+    --text-muted: #5f6b7a;
+    --primary: #00b9b7;
+    --accent: #4b6bff;
+    --ring: rgba(75,107,255,0.35);
+    --border: rgba(0,0,0,0.08);
+    --border-strong: rgba(0,0,0,0.14);
+    --shadow: 0 10px 24px rgba(16,24,40,.08);
+    --btn-bg: #ffffff;
+    --btn-text: #1d2430;
+    --btn-border: rgba(0,0,0,0.12);
+    --glass-bg: linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.06));
+    --glass-blur: 6px;
+  }
+}
+
+/*--------------------------------------------------------------
+ # Base / Resets
+--------------------------------------------------------------*/
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html, body {
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--font);
+  font-size: 16px;
+  line-height: 1.4;
+  text-align: center;
+  color: var(--text);
+  background: var(--bg);
+  background-image:
+    radial-gradient(1200px 500px at 20% -10%, rgba(108,140,255,.13), transparent 60%),
+    radial-gradient(800px 500px at 115% 110%, rgba(0,255,252,.08), transparent 60%),
+    linear-gradient(-45deg, rgba(0,0,0,.6), rgba(0,0,0,.2));
+  background-attachment: fixed;
+  margin: 0;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Container (article) */
+article {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: clamp(16px, 3vw, 36px);
+}
+
+/*--------------------------------------------------------------
+ # Layout
+--------------------------------------------------------------*/
+.timer-visual,
+.timer-ui {
+  background: var(--bg-elev);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  position: relative;
+  isolation: isolate;
+}
+
+.timer-visual {
+  padding: clamp(16px, 3vw, 28px);
+}
+
+.timer-ui {
+  padding: var(--card-pad);
+}
+
+@media (min-width: 920px) {
+  article {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: var(--gutter);
+    align-items: stretch;
+  }
+  .timer-visual,
+  .timer-ui {
+    text-align: left;
+  }
+}
+
+/* Stack on small screens */
+@media (max-width: 919.98px) {
+  article > * + * {
+    margin-top: var(--gutter);
+  }
+}
+
+/*--------------------------------------------------------------
+ # Card Aesthetic / Visual Polish
+--------------------------------------------------------------*/
+.timer-visual::before,
+.timer-ui::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+  mix-blend-mode: overlay;
+  opacity: .45;
+}
+
+.timer-visual::after,
+.timer-ui::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1px; /* gradient border thickness */
+  background: linear-gradient(135deg, rgba(255,255,255,0.14), rgba(255,255,255,0.04));
+  -webkit-mask: 
+    linear-gradient(#000 0 0) content-box, 
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  mask: 
+    linear-gradient(#000 0 0) content-box, 
+    linear-gradient(#000 0 0);
+  pointer-events: none;
+  opacity: .6;
+}
+
+/* Subtle glass blur for elevated surfaces (where supported) */
+@supports (backdrop-filter: blur(1px)) {
+  .timer-visual,
+  .timer-ui {
+    background: color-mix(in srgb, var(--bg-elev), transparent 5%);
+    backdrop-filter: blur(var(--glass-blur));
+  }
+}
+
+/* When running, highlight the visual card using :has() with graceful degradation */
+article:has(#start[aria-pressed="true"]) .timer-visual {
+  box-shadow: 0 12px 42px color-mix(in srgb, var(--accent), #000 70%), var(--shadow);
+  border-color: var(--border-strong);
+}
+
+/*--------------------------------------------------------------
+ # SVG / Timer Visual (scoped)
+ - FIX: scope generic circle rules to the timer only
+--------------------------------------------------------------*/
+.svg-loader {
+  position: relative;
+  display: block;
+  margin: 0 auto;
+  max-width: min(90vw, 480px);
+  height: auto;
+}
+
+.svg-loader_grow {
+  stroke-miterlimit: 10;
+  stroke-dasharray: 500;
+  stroke-dashoffset: -500;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s ease-in-out, stroke 300ms ease, filter 300ms ease;
+}
+
+/* Scoped circle rules to avoid unwanted global effects */
+.timer-visual svg circle {
+  stroke-width: 8;
+  stroke: var(--primary);
+  transition: stroke 300ms ease, filter 300ms ease;
+}
+
+.timer-visual svg circle.wq {
+  transition: all .3s ease;
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--primary), transparent 60%));
+}
+
+.timer-visual svg circle.gray {
+  stroke: rgba(127, 140, 160, 0.35);
+}
+
+#minute_text,
+#second_text {
+  font-weight: 800;
+  text-shadow: 0 2px 4px rgba(0,0,0,.25);
+}
+
+/* Add gentle ambient glow on running */
+article:has(#start[aria-pressed="true"]) .timer-visual .svg-loader {
+  filter: drop-shadow(0 6px 22px color-mix(in srgb, var(--primary), transparent 75%));
+}
+
+/*--------------------------------------------------------------
+ # Live Readout
+--------------------------------------------------------------*/
+.time-readout {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+#time-remaining {
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+  font-size: clamp(28px, 6vw, 48px);
+  background: var(--grad-1);
+  -webkit-background-clip: text;
+          background-clip: text;
+  color: transparent;
+  text-shadow: 0 0 0 rgba(0,0,0,0); /* keep crisp text */
+}
+
+#progress-percentage {
+  font-size: 0.875rem;
+  color: var(--text);
+  background: var(--bg-elev-2);
+  border: 1px solid var(--border);
+  padding: 6px 10px;
+  border-radius: 999px;
+  position: relative;
+  overflow: hidden;
+}
+
+#progress-percentage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(255,255,255,.12), transparent 60%);
+  transform: translateX(-60%);
+  animation: shimmer 3s linear infinite;
+  pointer-events: none;
+  opacity: .6;
+}
+
+@keyframes shimmer {
+  0%   { transform: translateX(-60%); }
+  100% { transform: translateX(120%); }
+}
+
+/*--------------------------------------------------------------
+ # Timer Controls ("- 25 +")
+ - Keeps existing selectors to not break JS
+--------------------------------------------------------------*/
+.timerControls{
+  color: var(--text);
+  font-size: clamp(32px, 9vw, 78px);
+  font-family: 'Open Sans', sans-serif;
+  margin: 10px 0 18px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: clamp(8px, 2vw, 16px);
+  cursor: default;
+  text-align: center;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.control {
+  appearance: none;
+  border: 1px solid var(--btn-border);
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  width: clamp(52px, 10vw, 76px);
+  height: clamp(52px, 10vw, 76px);
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  box-shadow: 0 8px 18px rgba(0,0,0,.08) inset, 0 1px 0 rgba(255,255,255,.05);
+  transition: transform .08s ease, background 200ms ease, color 200ms ease, border-color 200ms ease, box-shadow 180ms ease;
+  font-weight: 800;
+}
+
+.control:hover {
+  background: var(--glass-bg);
+  box-shadow: 0 10px 20px rgba(0,0,0,.12) inset, 0 0 0 1px color-mix(in srgb, var(--accent), transparent 70%);
+}
+
+.control:active {
+  transform: translateY(1px) scale(0.98);
+}
+
+.control--minus,
+.control--plus {
+  font-size: clamp(22px, 4.5vw, 30px);
+}
+
+#minuteCount{
+  display: block;
+  line-height: .9em;
+  vertical-align: middle;
+  padding: .2em .3em;
+}
+
+#minuteCount span {
+  font-size: .3em;
+  font-weight: 300;
+  color: var(--text-muted);
+}
+
+#minuteCount i {
+  font-style: normal;
+  text-shadow: 0 2px 6px rgba(0,0,0,.2);
+}
+
+/*--------------------------------------------------------------
+ # Buttons
+ - Global button styles + utility .btn, .btn-primary
+--------------------------------------------------------------*/
+button {
+  appearance: none;
+  background: var(--btn-bg);
+  border: 1px solid var(--btn-border);
+  color: var(--btn-text);
+  font-size: 1rem;
+  font-family: inherit;
+  padding: .7em 1.15em;
+  border-radius: .8em;
+  cursor: pointer;
+  transition: background 180ms ease, color 180ms ease, border-color 180ms ease, transform 80ms ease, box-shadow 180ms ease;
+  min-height: 44px; /* a11y target size */
+}
+
+button:hover {
+  background: var(--glass-bg);
+}
+
+button:active {
+  transform: translateY(1px);
+}
+
+button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--ring);
+}
+
+.btn {
+  background: var(--bg-elev-2);
+}
+
+.btn-primary,
+#start.btn-primary,
+#start.btn {
+  background: var(--grad-1);
+  color: #0e1220;
+  border: none;
+}
+
+.btn-primary:hover,
+#start.btn-primary:hover,
+#start.btn:hover {
+  filter: brightness(1.05);
+}
+
+/* Dynamic style when timer is running */
+#start[aria-pressed="true"] {
+  background: var(--grad-2);
+  color: #0e1220;
+}
+
+/* Layout for primary actions */
+.primary-actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  margin: 8px 0 6px;
+}
+
+/* Reset button special color */
+#reset {
+  background: var(--bg-elev-2);
+}
+
+/*--------------------------------------------------------------
+ # Details (Presets, Customize)
+--------------------------------------------------------------*/
+details {
+  margin-top: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: clip;
+  background: var(--bg-elev);
+}
+
+details > summary {
+  list-style: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  user-select: none;
+}
+
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+details > summary::before {
+  content: "";
+  inline-size: 10px;
+  block-size: 10px;
+  border-right: 2px solid var(--text-muted);
+  border-bottom: 2px solid var(--text-muted);
+  transform: rotate(-45deg);
+  transition: transform 180ms ease;
+  margin-right: 4px;
+}
+
+details[open] > summary::before {
+  transform: rotate(45deg);
+}
+
+.preset-list,
+.customize-grid {
+  padding: 0 16px 16px 16px;
+}
+
+.preset-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+}
+
+.preset {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--bg-elev-2);
+  border: 1px solid var(--btn-border);
+  color: var(--text);
+  transition: transform .06s ease, background 180ms ease, box-shadow 180ms ease;
+  box-shadow: 0 0 0 rgba(0,0,0,0);
+}
+
+.preset:hover {
+  background: var(--glass-bg);
+  box-shadow: 0 4px 14px rgba(0,0,0,.12);
+}
+
+.preset:active {
+  transform: translateY(1px);
+}
+
+.customize-grid {
+  display: grid;
+  align-items: center;
+  gap: 10px 12px;
+  grid-template-columns: 1fr;
+}
+
+.customize-grid label {
+  text-align: left;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.inline {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+/*--------------------------------------------------------------
+ # Inputs
+--------------------------------------------------------------*/
+input[type="number"],
+input[type="text"],
+input[type="search"] {
+  width: clamp(120px, 30vw, 200px);
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--btn-border);
+  background: var(--bg-elev-2);
+  color: var(--text);
+  font: inherit;
+  transition: border-color 180ms ease, box-shadow 180ms ease, background 180ms ease;
+}
+
+input[type="number"]:hover,
+input[type="text"]:hover,
+input[type="search"]:hover {
+  background: var(--glass-bg);
+}
+
+input[type="number"]:focus-visible,
+input[type="text"]:focus-visible,
+input[type="search"]:focus-visible {
+  outline: none;
+  border-color: transparent;
+  box-shadow: 0 0 0 3px var(--ring);
+}
+
+/* Hide spin buttons on number inputs where supported */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+/* Checkboxes */
+input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--accent);
+}
+
+/*--------------------------------------------------------------
+ # Utility / A11y
+--------------------------------------------------------------*/
+.kb-shortcuts {
+  margin-top: 10px;
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+noscript p {
+  margin: 0;
+  padding: 10px 12px;
+  color: #b71c1c;
+  background: rgba(183, 28, 28, .08);
+  border: 1px solid rgba(183, 28, 28, .25);
+  border-radius: 8px;
+}
+
+/*--------------------------------------------------------------
+ # Media Queries / Reduced Motion
+--------------------------------------------------------------*/
+@media (min-width: 520px) {
+  .customize-grid {
+    grid-template-columns: 180px 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  /* tighter spacing on small screens */
+  .timer-ui { padding: calc(var(--card-pad) - 4px); }
+  .timer-visual { padding: calc(clamp(16px, 3vw, 28px) - 2px); }
+}
+
+@media (max-width: 420px) {
+  .time-readout {
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+  }
+  #progress-percentage {
+    align-self: center;
+  }
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .svg-loader_grow,
+  .timer-visual svg circle,
+  .control,
+  button,
+  #progress-percentage::before,
+  .timer-visual::after,
+  .timer-ui::after,
+  .timer-visual::before,
+  .timer-ui::before {
+    transition: none !important;
+    animation: none !important;
+    filter: none !important;
+  }
+}

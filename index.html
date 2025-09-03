@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Timer</title>
+    <link rel="stylesheet" href="style.css">
+    <meta name="theme-color" content="#111111">
+</head>
+<body data-theme="auto">
+<article>
+  <div class="timer-visual">
+    <?xml version="1.0" encoding="utf-8"?>
+    <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+    <!-- Mark SVG as presentational; textual time readout provided below -->
+    <svg version="1.1" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="22.5em" height="22.5em" viewBox="0 0 200 200" enable-background="new 0 0 200 200" xml:space="preserve" class="svg-loader">
+      <defs>
+        <!-- SVG GLOW FILTER -->
+        <filter id="glow" x="-120%" y="-120%" width="400%" height="400%">
+          <feOffset result="offOut" in="SourceGraphic" dx="0" dy="0"></feOffset>
+          <feGaussianBlur result="blurOut" in="offOut" stdDeviation="10"></feGaussianBlur>
+          <feBlend in="SourceGraphic" in2="blurOut" mode="overlay"></feBlend>
+        </filter>
+      </defs>
+      <g>
+        <!-- Gray circle under the second countdown circle -->
+        <circle fill="none" cx="6.25em" cy="6.25em" r="5em" class="gray" transform="scale(.8, .8) translate(25 25)"/>
+        <!-- Second countdown circle (seconds) -->
+        <circle id="seconds_circle" fill="none" cx="6.25em" cy="6.25em" r="5em" class="svg-loader_grow" role="progressbar" aria-label="Seconds progress" aria-valuemin="0" aria-valuemax="60" aria-valuenow="0" transform="rotate(-89 100 100) scale(.8, .8) translate(25 25)" filter="url(#glow)"/>
+        <!-- Second countdown text -->
+        <text id="second_text" text-align="center" x="1.3em" y="2.4em" font-family="'Open Sans', Verdana" font-size="3em" fill="#fff">:00</text>
+        <!-- Minute countdown text -->
+        <text id="minute_text" text-align="center" x="5.5em" y="4em" font-family="'Open Sans', Verdana" font-size="1em" fill="#fff">25</text>
+        <!-- Minute countdown circle (minutes) -->
+        <circle id="minutes_circle" fill="none" cx="6.25em" cy="6.25em" r="5em" class="svg-loader_grow" role="progressbar" aria-label="Minutes progress" aria-valuemin="0" aria-valuemax="25" aria-valuenow="0" transform="rotate(-89 100 100) translate(0 200) scale(1, -1)" filter="url(#glow)"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="timer-ui">
+    <!-- Live time readout for screen readers and users -->
+    <div class="time-readout" aria-live="polite" role="timer" aria-atomic="true">
+      <span id="time-remaining" aria-label="Time remaining">25:00</span>
+      <span id="progress-percentage" aria-label="Progress completed">0%</span>
+    </div>
+
+    <!-- Main minute control header (keeps existing IDs to avoid breaking JS) -->
+    <h1 class="timerControls">
+      <button id="sub" type="button" class="control control--minus" aria-label="Decrease minutes by one">−</button>
+      <span id="minuteCount" aria-live="polite">
+        <i>25</i><br>
+        <span>minutes</span>
+      </span>
+      <button id="plus" type="button" class="control control--plus" aria-label="Increase minutes by one">+</button>
+    </h1>
+
+    <!-- Primary actions -->
+    <div class="primary-actions">
+      <button id="start" type="button" class="btn btn-primary" aria-pressed="false">Start Timer</button>
+      <button id="reset" type="button" class="btn" title="Reset timer">Reset</button>
+    </div>
+
+    <!-- Preset durations -->
+    <details class="presets">
+      <summary>Presets</summary>
+      <div class="preset-list">
+        <button type="button" class="preset" data-minutes="25">Pomodoro 25m</button>
+        <button type="button" class="preset" data-minutes="5">Short Break 5m</button>
+        <button type="button" class="preset" data-minutes="15">Long Break 15m</button>
+        <button type="button" class="preset" data-minutes="45">Deep Focus 45m</button>
+      </div>
+    </details>
+
+    <!-- Customization options -->
+    <details class="customize">
+      <summary>Customize</summary>
+      <div class="customize-grid">
+        <label for="minutes-input">Set minutes</label>
+        <div class="inline">
+          <input id="minutes-input" type="number" inputmode="numeric" min="1" max="180" step="1" value="25" aria-describedby="minutes-help">
+          <button id="set-minutes" type="button" class="btn">Apply</button>
+        </div>
+        <small id="minutes-help">Range: 1–180 minutes</small>
+
+        <label class="inline">
+          <input id="mute-toggle" type="checkbox">
+          Mute alarm
+        </label>
+
+        <div class="inline">
+          <button id="notify-permission" type="button" class="btn" title="Enable desktop notifications">Enable Notifications</button>
+          <button id="theme-toggle" type="button" class="btn" aria-pressed="false" title="Toggle light/dark theme">Toggle Theme</button>
+        </div>
+      </div>
+    </details>
+
+    <!-- Optional: keyboard shortcuts -->
+    <p class="kb-shortcuts" aria-live="polite">
+      Shortcuts: Space = start/pause, R = reset, + / − = adjust minutes
+    </p>
+
+    <!-- Audio element for alarms -->
+    <audio id="alarm-sound" preload="auto">
+      <source src="assets/alarm.mp3" type="audio/mpeg">
+      <source src="assets/alarm.ogg" type="audio/ogg">
+      <!-- Fallback text -->
+      Your browser does not support the audio element.
+    </audio>
+
+    <!-- Fallback for no-JS -->
+    <noscript>
+      <p>Please enable JavaScript to use the countdown timer.</p>
+    </noscript>
+  </div>
+
+  <script src="script.js"></script>
+</article>
+</body>
+</html>
