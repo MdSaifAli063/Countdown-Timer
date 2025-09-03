@@ -14,7 +14,7 @@ A beautiful, accessible, and responsive countdown timer with SVG rings, presets 
 ## 👀 Preview
 
 <p align="center">
-  <img src="assets/preview.gif" alt="Countdown timer animated preview" width="740"><br>
+  <img src="https://github.com/MdSaifAli063/Countdown-Timer/blob/c7c95b6d28f40fc0f0c7f9a6df668e084ef07c8e/Screenshot%202025-09-04%20014057.png" alt="Countdown timer animated preview" width="740"><br>
   <sub>Animated preview of the timer in action</sub>
 </p>
 
