@@ -21,7 +21,7 @@ A beautiful, accessible, and responsive countdown timer with SVG rings, presets 
 <p align="center">
   <picture>
     <source srcset="assets/preview-dark.png" media="(prefers-color-scheme: dark)">
-    <img src="assets/preview-light.png" alt="Countdown timer UI screenshots (light and dark)" width="740">
+    <img src="https://github.com/MdSaifAli063/Countdown-Timer/blob/9a6d3d5a62a086ffcc1123cb1655ba21afb40b1b/Screenshot%202025-09-04%20014016.png" alt="Countdown timer UI screenshots (light and dark)" width="740">
   </picture><br>
   <sub>Light and Dark themes</sub>
 </p>
