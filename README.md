@@ -189,7 +189,7 @@ Then navigate to http://localhost:8000 (or the served URL).
 
 ## 🏷️ License
 
-MIT License — feel free to use, modify, and distribute. Replace with your organization’s license if needed.
+MIT License — feel free to use, modify, and distribute.
 
 ---
 
