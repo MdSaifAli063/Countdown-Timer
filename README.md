@@ -10,7 +10,6 @@ A beautiful, accessible, and responsive countdown timer with SVG rings, presets 
 
 ---
 
-
 ## 👀 Preview
 
 <p align="center">
