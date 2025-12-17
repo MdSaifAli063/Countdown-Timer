@@ -97,9 +97,7 @@ Then navigate to http://localhost:8000 (or the served URL).
 
 ## 🗂️ Project Structure
 
-
 . ├─ index.html # Markup with SVG timer, controls, and ARIA attributes ├─ style.css # Responsive, theme-aware UI styles ├─ script.js # Timer logic, notifications, audio, persistence └─ assets/ ├─ alarm.mp3 └─ alarm.ogg
-
 
 ---
 
